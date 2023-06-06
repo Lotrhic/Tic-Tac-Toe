@@ -1,127 +1,73 @@
-import random
-#juego del gato
+# Función para imprimir el tablero actualizado
+def imprimir_tablero(tablero):
+    print("\n")
+    for i in range(3):
+        print(tablero[i][0] + " | " + tablero[i][1] + " | " + tablero[i][2])
+        if i < 2:
+            print("---------")
+    print("\n")
 
-gato = [] #matriz que va a contener lo valores del juego
-
-def juegoGato():
-    ganador = False
-    gato = crearMatriz(3,3,"-")
-    formatearMatriz(gato)
-    numturnos = 1 #total de turnos que se pueden realizar en una partida
-    libre = False
-    fil = 0
-    col = 0
-    jugador = "X"
-
-    if numturnos>9:
-        print("¡Es un empate!")
-        while ganador==False or numturnos < 9:
-            
-            #turno del jugador (X)
-            #el jugador debe indicar fila y columna (posición)
-            #preguntar si la posición eligida está libre
-            jugador = "X"
-
-            if verificar_ganador(gato, jugador):
-                print("\n")
-                print("¡Jugador", jugador, "ha ganado!")
-                ganador=True
-                return ganador
-
-            while jugador == "X":
-                print("\n")
-                print("Jugador",jugador,"por favor elija una posición a jugar: ")
-                print ("Ronda: ",numturnos)
-                fil = int(input("F: "))
-                col = int(input("C: "))
-                libre = posicionLibre (gato,fil,col)
-                if libre == True:
-                    gato[fil][col] = "X"
-                    numturnos += 1
-                    jugador = "O"
-                    formatearMatriz(gato)
-                    break
-                else:
-                    print("Posición Ocupada")
-                    
-            if verificar_ganador(gato, jugador):
-                print("\n")
-                print("¡Jugador", jugador, "ha ganado!")
-                ganador=True
-                return ganador
-            #TURNO JUGADOR (0)
-            
-            while jugador =="O":
-                print("\n")
-                print("Jugado",jugador,"por favor elija una posición a jugar: ")
-                print ("Ronda: ",numturnos)
-                fil = int(input("F: "))
-                col = int(input("C: "))
-                libre = posicionLibre (gato,fil,col)
-                if libre == True:
-                    gato[fil][col] = "0"
-                    numturnos += 1
-                    jugador = "X"
-                    formatearMatriz(gato)
-                    break
-                else:
-                    print("Posición Ocupada")
-                    formatearMatriz(gato)
-
-                if verificar_ganador(gato, jugador):
-                    print("\n")
-                    print("¡Jugador", jugador, "ha ganado!")
-                    ganador=True
-                    return ganador
-
-        
-
-def posicionLibre(mg,f,c):
-    if mg[f][c] == "-":
-        return True
-    else:
-        return False
-
-def crearMatriz(f,c,vi):
-    m = []
-    for i in range(f):
-        m.append([vi]*c)
-    return m
-
-def recorrerYCambiar(m,vc): 
-    for i in range(len(m)):
-        for j in range(len(m[0])):
-            m[i][j] = vc
-    return m
-
-def formatearMatriz(m): 
-    for i in range(len(m)):
-        print()
-        for j in range(len(m[0])):
-            print(m[i][j], sep="t", end=" ")
-
-def verificar_ganador(gato, jugador):
+# Función para verificar si alguien ha ganado
+def verificar_ganador(tablero, jugador):
     # Comprobación de filas
     for i in range(3):
-        if gato[i][0] == gato[i][1] == gato[i][2] == jugador:
+        if tablero[i][0] == tablero[i][1] == tablero[i][2] == jugador:
             return True
 
     # Comprobación de columnas
     for i in range(3):
-        if gato[0][i] == gato[1][i] == gato[2][i] == jugador:
+        if tablero[0][i] == tablero[1][i] == tablero[2][i] == jugador:
             return True
 
     # Comprobación de diagonales
-    if gato[0][0] == gato[1][1] == gato[2][2] == jugador:
+    if tablero[0][0] == tablero[1][1] == tablero[2][2] == jugador:
         return True
-    if gato[0][2] == gato[1][1] == gato[2][0] == jugador:
+    if tablero[0][2] == tablero[1][1] == tablero[2][0] == jugador:
         return True
 
     return False
 
-juegoGato()
+# Función para jugar al juego
+def jugar_tic_tac_toe():
+    # Crear el tablero vacío
+    tablero = [[" ", " ", " "],
+               [" ", " ", " "],
+               [" ", " ", " "]]
 
-#0,0  0,1  0,2
-#1,0  1,1  1,2
-#2,0  2,1  2,2
+    jugador_actual = "X"
+    jugadas = 0
+
+    # Ciclo principal del juego
+    while jugadas < 9:
+        imprimir_tablero(tablero)
+
+        # Obtener la fila y la columna del jugador
+        fila = int(input("Ingresa el número de fila (0-2): "))
+        columna = int(input("Ingresa el número de columna (0-2): "))
+
+        # Verificar si la posición está ocupada
+        if tablero[fila][columna] != " ":
+            print("La posición ya está ocupada. Intenta de nuevo.")
+            continue
+
+        # Realizar la jugada
+        tablero[fila][columna] = jugador_actual
+        jugadas += 1
+
+        # Verificar si el jugador actual ha ganado
+        if verificar_ganador(tablero, jugador_actual):
+            imprimir_tablero(tablero)
+            print("¡Jugador", jugador_actual, "ha ganado!")
+            return
+
+        # Cambiar al siguiente jugador
+        jugador_actual = "O" if jugador_actual == "X" else "X"
+
+    # Si no hay ganador después de 9 jugadas, es un empate
+    imprimir_tablero(tablero)
+    print("¡Es un empate!")
+
+# Iniciar el juego
+jugar_tic_tac_toe()
+
 
